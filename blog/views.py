@@ -45,3 +45,19 @@ def add_entry_post():
     session.add(entry)
     session.commit()
     return redirect(url_for("entries"))
+
+@app.route("/entry/<id>")
+def single_entry(id):
+    
+    count = session.query(Entry).count()
+
+    has_next = int(id) > 1
+    has_prev = int(id) < count
+
+    entry = session.query(Entry).filter(Entry.id==id)
+    return render_template("single_entry.html",
+        entry=entry[0],
+        id = int(id),
+        has_next=has_next,
+        has_prev=has_prev,
+    )
