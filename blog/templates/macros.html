@@ -9,7 +9,9 @@
     </div>
     <div class="col-md-10">
         <h1>
-            {{ entry.title }}
+            <a style="background-color: white; color: black;" href="{{ url_for('single_entry', id=entry.id) }}">
+                {{ entry.title }}
+            </a>
         </h1>
         {{ entry.content | markdown }}
     </div>
