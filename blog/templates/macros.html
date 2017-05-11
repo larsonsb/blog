@@ -6,6 +6,7 @@
                 {{ entry.datetime | dateformat("%d/%m/%y") }}
             </li>
         </ul>
+        <p style="font-size: 70%;">By: {{ entry.author.name }}</p>
         <a style="background-color: white; color: black; font-size: 70%;" href="{{ url_for('edit_entry_get', id=entry.id) }}">Edit</a>
         <br>
         <a style="background-color: white; color: black; font-size: 70%;" href="{{ url_for('delete_entry_get', id=entry.id) }}">Delete</a>
