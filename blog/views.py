@@ -3,20 +3,32 @@ from flask import render_template, request, redirect, url_for
 from . import app
 from .database import session, Entry
 
-PAGINATE_BY = 10
+DEFAULT_PAGINATE_BY = 10
 
-@app.route("/")
-@app.route("/page/<int:page>")
-def entries(page=1):
+@app.route("/", methods=['GET'])
+@app.route("/page/<int:page>", methods=['GET'])
+def entries_get(page=1):
     # Zero-indexed page
     page_index = page - 1
-
+    
+    paginate_by = DEFAULT_PAGINATE_BY
+    if request.args.get('limit'):
+        try:
+            paginate_by = float(request.args.get('limit'))
+        except ValueError:
+            paginate_by = DEFAULT_PAGINATE_BY
+        paginate_by = int(round(paginate_by))
+        if paginate_by < 1:
+            paginate_by = 1
+        if paginate_by > 100:
+            paginate_by = 100
+    
     count = session.query(Entry).count()
 
-    start = page_index * PAGINATE_BY
-    end = start + PAGINATE_BY
+    start = page_index * paginate_by
+    end = start + paginate_by
 
-    total_pages = (count - 1) // PAGINATE_BY + 1
+    total_pages = (count - 1) // paginate_by + 1
     has_next = page_index < total_pages - 1
     has_prev = page_index > 0
 
@@ -29,8 +41,13 @@ def entries(page=1):
         has_next=has_next,
         has_prev=has_prev,
         page=page,
-        total_pages=total_pages
+        total_pages=total_pages,
     )
+
+@app.route("/", methods=['POST'])
+@app.route("/page/<int:page>", methods=['POST'])
+def entries_post(page=1):
+    return redirect(url_for('entries_get', limit=request.form['limit']))
 
 @app.route("/entry/add", methods=["GET"])
 def add_entry_get():
@@ -44,7 +61,7 @@ def add_entry_post():
     )
     session.add(entry)
     session.commit()
-    return redirect(url_for("entries"))
+    return redirect(url_for("entries_get"))
 
 @app.route("/entry/<id>")
 def single_entry(id):
@@ -82,4 +99,4 @@ def delete_entry_get(id):
 def delete_entry_post(id):
     session.query(Entry).filter(Entry.id==id).delete()
     session.commit()
-    return redirect(url_for("entries"))
+    return redirect(url_for("entries_get"))

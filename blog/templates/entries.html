@@ -2,6 +2,23 @@
 {% extends "base.html" %}
 {% block content %}
 
+<form role="form" method="POST">
+    <label for="limit">Entries per page:</label>
+    <select id = "limit" name="limit">
+        <option value = "10">10</option>
+        <option value = "20">20</option>
+        <option value = "30">30</option>
+        <option value = "40">40</option>
+        <option value = "50">50</option>
+        <option value = "60">60</option>
+        <option value = "70">70</option>
+        <option value = "80">80</option>
+        <option value = "90">90</option>
+        <option value = "100">100</option>
+    </select>
+    <input type="submit" value="Submit"></input>
+</form>
+
 {% for entry in entries %}
 {{ macros.render_entry(entry) }}
 {% endfor %}
@@ -9,12 +26,12 @@
 <ul class="pager">
     {% if has_next %}
     <li class="previous" >
-    <a href="{{ url_for('entries', page=page + 1) }}">&larr; Older</a>
+    <a href="{{ url_for('entries_get', page=page + 1, limit=request.args.get('limit')) }}">&larr; Older</a>
     </li>
     {% endif %}
     {% if has_prev %}
     <li class="next">
-    <a href="{{ url_for('entries', page=page - 1) }}">&rarr; Newer</a>
+    <a href="{{ url_for('entries_get', page=page - 1, limit=request.args.get('limit')) }}">&rarr; Newer</a>
     </li>
     {% endif %}
 </ul>
