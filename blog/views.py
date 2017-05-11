@@ -61,3 +61,15 @@ def single_entry(id):
         has_next=has_next,
         has_prev=has_prev,
     )
+
+@app.route("/entry/<id>/edit", methods=["GET"])
+def edit_entry_get(id):
+    entry = session.query(Entry).filter(Entry.id==id)
+    return render_template("edit_entry.html", entry=entry[0])
+
+@app.route("/entry/<id>/edit", methods=["POST"])
+def edit_entry_post(id):
+    session.query(Entry).filter(Entry.id==id).update({Entry.title: request.form["title"]})
+    session.query(Entry).filter(Entry.id==id).update({Entry.content: request.form["content"]})
+    session.commit()
+    return redirect(url_for("entries"))
