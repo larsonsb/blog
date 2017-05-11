@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form role="form" method="POST">
+    Really delete?
+    <br>
+    <input type="submit" class="btn btn-default">
+    </input>
+</form>
+</input>
+<button class="btn btn-default">
+    <a style="background-color: white; color: black;" href="{{ url_for('entries') }}">Cancel</a>
+</button>
+{% endblock %}

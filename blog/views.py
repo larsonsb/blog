@@ -72,4 +72,14 @@ def edit_entry_post(id):
     session.query(Entry).filter(Entry.id==id).update({Entry.title: request.form["title"]})
     session.query(Entry).filter(Entry.id==id).update({Entry.content: request.form["content"]})
     session.commit()
+    return redirect(url_for('single_entry', id=id))
+
+@app.route("/entry/<id>/delete", methods=["GET"])
+def delete_entry_get(id):
+    return render_template("delete_entry.html")
+
+@app.route("/entry/<id>/delete", methods=["POST"])
+def delete_entry_post(id):
+    session.query(Entry).filter(Entry.id==id).delete()
+    session.commit()
     return redirect(url_for("entries"))
