@@ -3,7 +3,9 @@
     <div class="col-md-2 text-right metadata">
         <ul class="list-unstyled">
             <li>
-                {{ entry.datetime | dateformat("%d/%m/%y") }}
+                <a style="background-color: white; color: black;" href="{{ url_for('edit_entry_post', id=entry.id) }}">
+                    {{ entry.datetime | dateformat("%d/%m/%y") }}
+                </a>
             </li>
         </ul>
     </div>
