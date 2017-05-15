@@ -29,7 +29,19 @@ class TestViews(unittest.TestCase):
         session.close()
         # Remove the tables and their data from the database
         Base.metadata.drop_all(engine)
-    
+
+    def test_add_entry_logged_out(self):
+
+        response = self.client.post("/entry/add", data={
+            "title": "Test Entry logged out",
+            "content": "Test content logged out"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response.location).path, "/login")
+        entries = session.query(Entry).all()
+        self.assertEqual(len(entries), 0)
+
     def simulate_login(self):
         with self.client.session_transaction() as http_session:
             http_session["user_id"] = str(self.user.id)
@@ -52,6 +64,10 @@ class TestViews(unittest.TestCase):
         self.assertEqual(entry.title, "Test Entry")
         self.assertEqual(entry.content, "Test content")
         self.assertEqual(entry.author, self.user)
+    
+    def test_edit_entry_logged_out(self):
+        response = self.client.post("/entry/1/edit")
+        self.assertEqual(urlparse(response.location).path, "/login")
 
 if __name__ == "__main__":
     unittest.main()

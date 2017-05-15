@@ -39,6 +39,8 @@ class TestViews(unittest.TestCase):
         button = self.browser.find_by_css("button[type=submit]")
         button.click()
         self.assertEqual(self.browser.url, "http://127.0.0.1:8080/")
+        self.browser.visit("http://127.0.0.1:8080/add")
+        self.assertEqual(self.browser.status_code.code, 200)
 
     def test_login_incorrect(self):
         self.browser.visit("http://127.0.0.1:8080/login")
@@ -47,6 +49,14 @@ class TestViews(unittest.TestCase):
         button = self.browser.find_by_css("button[type=submit]")
         button.click()
         self.assertEqual(self.browser.url, "http://127.0.0.1:8080/login")
+
+    def test_root(self):
+        self.browser.visit("http://127.0.0.1:8080/")
+        self.assertEqual(self.browser.status_code.code, 200)
+
+    def test_root_with_page(self):
+        self.browser.visit("http://127.0.0.1:8080/page/1")
+        self.assertEqual(self.browser.status_code.code, 200)
 
     def tearDown(self):
         """ Test teardown """
